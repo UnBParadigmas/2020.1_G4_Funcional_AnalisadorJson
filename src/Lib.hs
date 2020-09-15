@@ -5,6 +5,7 @@ module Lib
 
 import qualified Data.Map as Map
 import Data.Maybe
+import Data.Char
 
 data Json = 
     JsonNull
@@ -27,6 +28,14 @@ helperCharParser a = Parser $ \x ->
         | otherwise   -> Nothing
     [] -> Nothing
 
+-- helperCharParser :: Char -> Parser Char
+-- helperCharParser a = Parser f
+--     where
+--     f (z:zs) 
+--         | z == a = Just (a, zs)
+--         | otherwise = Nothing
+--     f [] = Nothing
+
 -- Jeito 1 de fazer: Utilizando diretamente o runParser e utilizando do operador "do" para fazer o parse do json
 
 helperStringParser :: String -> Parser String
@@ -35,6 +44,21 @@ helperStringParser (x:xs) = Parser $ \c -> do
    (_, cs)  <- runParser (helperCharParser x) c 
    (_, cs') <- runParser (helperStringParser xs) cs
    pure (x:xs, cs') 
+
+-- Separa os a string em numeros e o resto ex: "123hello" => ("hello", "123")
+spanParser :: (Char -> Bool) -> Parser String
+spanParser f = 
+  Parser $ \x ->
+    let (token, rest) = span f x
+     in Just (rest, token)
+
+notNull :: Parser [a] -> Parser [a]
+notNull (Parser p) =
+    Parser $ \x -> do
+        (x', xs) <- p x
+        if null xs
+            then Nothing
+            else Just (x', xs) 
 
 jsonNullParser :: Parser Json
 jsonNullParser = Parser $ \x -> do
@@ -50,6 +74,19 @@ jsonFalseParser :: Parser Json
 jsonFalseParser = Parser $ \x -> do
     (_, xs) <- runParser (helperStringParser "false") x
     pure (JsonBool False, xs)
+
+jsonNumberParser :: Parser Json
+jsonNumberParser = Parser $ \x -> do 
+    (_, xs) <- runParser (notNull (spanParser isDigit)) x
+    pure(JsonNumber, xs)
+
+-- stringLiteral :: Parser String
+-- stringLiteral = spanParser (/= '"')
+
+-- jsonStringParser :: Parser String
+-- jsonStringParser = helperCharParser '"' *> stringLiteral <* helperCharParser '"'
+
+
 
 -- Jeito 2 de fazer: Instanciando Functor + Applicative + Monad (pois estamos usando o Monad Maybe) manualmente
 -- e utilizando map para fazer o parser de string e do json, alem de utilizar functor para alterar o tipo do jsonNull
