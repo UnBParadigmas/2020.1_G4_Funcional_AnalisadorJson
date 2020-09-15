@@ -6,7 +6,6 @@ module Lib
 import qualified Data.Map as Map
 import Data.Maybe
 import Data.Char
-import Control.Applicative
 
 data Json = 
     JsonNull
@@ -53,6 +52,14 @@ spanParser f =
     let (token, rest) = span f x
      in Just (rest, token)
 
+notNull :: Parser [a] -> Parser [a]
+notNull (Parser p) =
+    Parser $ \x -> do
+        (x', xs) <- p x
+        if null xs
+            then Nothing
+            else Just (x', xs) 
+
 jsonNullParser :: Parser Json
 jsonNullParser = Parser $ \x -> do
     (_, xs) <- runParser (helperStringParser "null") x
@@ -70,8 +77,15 @@ jsonFalseParser = Parser $ \x -> do
 
 jsonNumberParser :: Parser Json
 jsonNumberParser = Parser $ \x -> do 
-    (_, xs) <- runParser (spanParser isDigit) x
+    (_, xs) <- runParser (notNull (spanParser isDigit)) x
     pure(JsonNumber, xs)
+
+-- stringLiteral :: Parser String
+-- stringLiteral = spanParser (/= '"')
+
+-- jsonStringParser :: Parser String
+-- jsonStringParser = helperCharParser '"' *> stringLiteral <* helperCharParser '"'
+
 
 
 -- Jeito 2 de fazer: Instanciando Functor + Applicative + Monad (pois estamos usando o Monad Maybe) manualmente
