@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d35cd80789c606893545b631c23aca7496a69d1cf6b6cb13d4beb3d2e11c3a92
+-- hash: 94e62db19e78b93c6b637f235792777174851a10b8c1c96c3c0459688e65baf4
 
 name:           json-parser
 version:        0.1.0.0
@@ -27,7 +27,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Json
   other-modules:
       Paths_json_parser
   hs-source-dirs:
