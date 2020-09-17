@@ -1,0 +1,9 @@
+{
+    "anjo": {
+        "nome": "milene", 
+        "idade": 20,
+        "qualidades": ["linda", "perfeita", "didatica", "mãe"],
+        "telefone": "61999000000",
+        "is_muito_amada": true
+    }
+}
