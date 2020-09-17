@@ -1,5 +1,5 @@
-import Control.Applicative ( Alternative((<|>), empty) ) 
-import Data.Char (isDigit)
+import Control.Applicative ( Alternative((<|>), empty, many) ) 
+import Data.Char (isDigit, isSpace)
 import Control.Monad (guard)
 
 data Json = 
@@ -65,7 +65,10 @@ notNull (Parser p) =
         (x', xs) <- p x
         if null xs
             then Nothing
-            else pure (x', xs) 
+            else pure (x', xs)
+
+sepBy :: Parser a -> Parser b -> Parser [b]
+sepBy sep x = (:) <$> x <*> many (sep *> x) <|> pure [] 
 
 jsonNullParser :: Parser Json
 jsonNullParser = Parser $ \x -> do
@@ -101,9 +104,13 @@ helperQuote = \x ->
 jsonStringParser :: Parser Json
 jsonStringParser = JsonString <$> helperQuote (/= '"')
 -- precisa da operacao fmap pois se torna necessario mudar o tipo da variavel para JsonString (constructor de Json)
-    
+
+jsonArrayParser :: Parser Json
+jsonArrayParser = JsonArray <$> (helperCharParser '[' *> spanParser isSpace *> elements <* spanParser isSpace <* helperCharParser ']')
+    where
+        elements = sepBy(spanParser isSpace *> helperCharParser ',' <* spanParser isSpace) jsonParser
 
 jsonParser :: Parser Json
 jsonParser = 
-    jsonNullParser <|> jsonBoolParser <|> jsonNumberParser <|> jsonStringParser
+    jsonNullParser <|> jsonBoolParser <|> jsonNumberParser <|> jsonStringParser <|> jsonArrayParser
 
