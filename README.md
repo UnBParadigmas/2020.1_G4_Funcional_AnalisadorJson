@@ -35,10 +35,12 @@ Apos entrar no ghci, o usuario pode escolher 2 opcoes:
 - Entrar com um arquivo, utilizando o comando: `readAndParseFile "path_to_file.json" jsonParser`;
 
 ## Vídeo
-<video  controls="true" allowfullscreen="true">
-  <source src="static/zoom_6.mp4" type="video/mp4">
-</video>
 
+<video controls="controls">
+  <source type="video/mp4" src="zoom_6.mp4"></source>
+  <source type="video/webm" src="zoom_6.mp4"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
 
 ## Outros 
 Quaisquer outras informações sobre seu projeto podem ser descritas a seguir.
