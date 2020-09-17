@@ -37,8 +37,8 @@ Apos entrar no ghci, o usuario pode escolher 2 opcoes:
 ## Vídeo
 
 <video controls="controls">
-  <source type="video/mp4" src="zoom_6.mp4"></source>
-  <source type="video/webm" src="zoom_6.mp4"></source>
+  <source type="video/mp4" src="./zoom_6.mp4"></source>
+  <source type="video/webm" src="./zoom_6.mp4"></source>
   <p>Your browser does not support the video element.</p>
 </video>
 
