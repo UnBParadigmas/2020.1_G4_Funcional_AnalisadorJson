@@ -28,7 +28,7 @@ O usuario deve entrar no ghci para mais facil interacao com o programa, escreven
 Apos entrar no ghci, o usuario pode escolher 2 opcoes:
 - Entrar com o Json manualmente, utilizando o comando: `run "JSON_DO_USUARIO"` se for uma string, necessita de `\"`  
   ex: `run "{ \"key\" : \"value\" }"`;
-- Entrar com um arquivo, utilizando o comando: `parseFile "path_to_file.json" jsonParser`;
+- Entrar com um arquivo, utilizando o comando: `readAndParseFile "path_to_file.json" jsonParser`;
 
 ## Vídeo
 Adicione 1 ou mais vídeos com a execução do projeto.
