@@ -1,6 +1,11 @@
+module JsonParser 
+    (   Parser (..)
+        , Json (..)
+        , jsonParser
+    ) where
+
 import Control.Applicative ( Alternative((<|>), empty, many) ) 
 import Data.Char (isDigit, isSpace)
-import Control.Monad (guard)
 
 data Json = 
     JsonNull
@@ -8,6 +13,7 @@ data Json =
     | JsonNumber 
     | JsonString String
     | JsonArray [Json]
+    | JsonObject [(String, Json)]
     deriving (Eq, Show)
 
 newtype Parser c = Parser {
@@ -28,7 +34,6 @@ instance Applicative Parser where
             (x'', c) <- pr x'
             Just (x'', f c)
 
--- para a funcao <|>, utilizaremos a implementacao do Maybe, pois eh o tipo de valor que receberemos
 instance Alternative Parser where
     empty = Parser $ \_ -> Nothing
     (Parser p) <|> (Parser pr) = 
@@ -53,8 +58,8 @@ helperStringParser (x:xs) = Parser $ \c -> do
    pure (cs', x:xs) 
 
 -- Separa os a string em numeros e o resto ex: "123hello" => ("hello", "123")
-spanParser :: (Char -> Bool) -> Parser String
-spanParser f = 
+spanHelperParser :: (Char -> Bool) -> Parser String
+spanHelperParser f = 
   Parser $ \x ->
     let (token, rest) = span f x
      in pure (rest, token)
@@ -67,8 +72,13 @@ notNull (Parser p) =
             then Nothing
             else pure (x', xs)
 
+-- funcao que utiliza um separador especifico para dividir varios valores pelo separador
+-- many :: f a -> f [a], funcao que aplica a funcao para varios valores do mesmo tipo ate dar errado
+-- (sep *> x) diz que cada valor x vai ser separado pelo separador 
+-- para poder transformar x em [x], utiliza <*> para entrar na lista e <$> para adicionar na lista
+-- e por fim, para poder usar o valor vazio, utiliza <|> com uma lista vazia
 sepBy :: Parser a -> Parser b -> Parser [b]
-sepBy sep x = (:) <$> x <*> many (sep *> x) <|> pure [] 
+sepBy separator x = (:) <$> x <*> many (separator *> x) <|> pure [] 
 
 jsonNullParser :: Parser Json
 jsonNullParser = Parser $ \x -> do
@@ -90,27 +100,38 @@ jsonBoolParser = jsonFalseParser <|> jsonTrueParser
 
 jsonNumberParser :: Parser Json
 jsonNumberParser = Parser $ \x -> do 
-    (xs, _) <- runParser (notNull (spanParser isDigit)) x
+    (xs, _) <- runParser (notNull (spanHelperParser isDigit)) x
     pure(xs, JsonNumber)
 
 -- utiliza o operador *> que significa, retornar o valor para que esta apontado
 -- applicatives possuem um estado interior que, no caso, deve ser manipulado
 -- nesse caso, o que deve ser manipulado eh o estado do parser, os valores que devem ser passados a frente
 -- entao isso eh util para combinar os parsers, pois podem ter varios parsers combinados com o retorno de apenas 1
-helperQuote :: (Char -> Bool) -> Parser String
-helperQuote = \x -> 
-    helperCharParser '"' *> spanParser x <* helperCharParser '"'
+simpleString :: (Char -> Bool) -> Parser String
+simpleString = \x -> 
+    helperCharParser '"' *> spanHelperParser x <* helperCharParser '"'
 
 jsonStringParser :: Parser Json
-jsonStringParser = JsonString <$> helperQuote (/= '"')
+jsonStringParser = JsonString <$> simpleString (/= '"')
 -- precisa da operacao fmap pois se torna necessario mudar o tipo da variavel para JsonString (constructor de Json)
 
 jsonArrayParser :: Parser Json
-jsonArrayParser = JsonArray <$> (helperCharParser '[' *> spanParser isSpace *> elements <* spanParser isSpace <* helperCharParser ']')
+jsonArrayParser = JsonArray <$> (helperCharParser '[' *> spanHelperParser isSpace *> elements <* spanHelperParser isSpace <* helperCharParser ']')
     where
-        elements = sepBy(spanParser isSpace *> helperCharParser ',' <* spanParser isSpace) jsonParser
+        elements = sepBy(spanHelperParser isSpace *> helperCharParser ',' <* spanHelperParser isSpace) jsonParser
+
+jsonObjectParser :: Parser Json
+jsonObjectParser = (helperCharParser '{' *> spanHelperParser isSpace *> values <* spanHelperParser isSpace <* helperCharParser '}')
+    where
+        values = 
+            JsonObject <$> sepBy (spanHelperParser isSpace *> helperCharParser ',' <* spanHelperParser isSpace) value
+        value = 
+            (\key _ value -> (key, value)) <$> simpleString (/= '"') <*> 
+            (spanHelperParser isSpace *> helperCharParser ':' *> spanHelperParser isSpace) 
+            <*> jsonParser
+            
 
 jsonParser :: Parser Json
 jsonParser = 
-    jsonNullParser <|> jsonBoolParser <|> jsonNumberParser <|> jsonStringParser <|> jsonArrayParser
+    jsonNullParser <|> jsonBoolParser <|> jsonNumberParser <|> jsonStringParser <|> jsonArrayParser <|> jsonObjectParser
 
