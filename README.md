@@ -19,13 +19,16 @@ O projeto se trata da criação de um Parser de JSON utilizando da linguagem Has
 Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
 
 ## Instalação 
-**Linguagens**: xxxxxx<br>
-**Tecnologias**: xxxxxx<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
-Insira um manual ou um script para auxiliar ainda mais.
+**Linguagens**: Haskell<br>
+**Tecnologias**: Stack<br>
+O usuario deve entrar no ghci para mais facil interacao com o programa, escrevendo o seguinte comando:  
+`ghci app/Main.hs -i src/Json.hs`
 
 ## Uso 
-Explique como usar seu projeto, caso haja algum passo a passo após o comando de execução.
+Apos entrar no ghci, o usuario pode escolher 2 opcoes:
+- Entrar com o Json manualmente, utilizando o comando: `run "JSON_DO_USUARIO"` se for uma string, necessita de `\"`  
+  ex: `run "{ \"key\" : \"value\" }"`;
+- Entrar com um arquivo, utilizando o comando: `parseFile "path_to_file.json" jsonParser`;
 
 ## Vídeo
 Adicione 1 ou mais vídeos com a execução do projeto.
@@ -34,4 +37,5 @@ Adicione 1 ou mais vídeos com a execução do projeto.
 Quaisquer outras informações sobre seu projeto podem ser descritas a seguir.
 
 ## Fontes
-Caso utilize materiais de terceiros, referencie-os adequadamente.
+*TSODING, **JSON Parser 100% From Scratch in Haskell (only 111 lines)**. Youtube.  
+Disponivel em: <https://www.youtube.com/watch?v=N9RUqGYuGfw>*
