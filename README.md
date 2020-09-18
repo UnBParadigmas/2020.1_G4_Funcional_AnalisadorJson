@@ -16,8 +16,12 @@
 O projeto se trata da criação de um Parser de JSON utilizando da linguagem Haskell. 
 
 ## Screenshots
-Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
 
+### Abrindo a plataforma GHCi
+![Abrindo a plataforma GHCi](static/print1.png)
+
+### Testando o exemplo geral
+![Testando o exemplo geral](static/print2.png)
 ## Instalação 
 **Linguagens**: Haskell<br>
 **Tecnologias**: Stack<br>
@@ -31,7 +35,12 @@ Apos entrar no ghci, o usuario pode escolher 2 opcoes:
 - Entrar com um arquivo, utilizando o comando: `readAndParseFile "path_to_file.json" jsonParser`;
 
 ## Vídeo
-Adicione 1 ou mais vídeos com a execução do projeto.
+
+<video controls="controls">
+  <source type="video/mp4" src="./zoom_6.mp4"></source>
+  <source type="video/webm" src="./zoom_6.mp4"></source>
+  <p>Your browser does not support the video element.</p>
+</video>
 
 ## Outros 
 Quaisquer outras informações sobre seu projeto podem ser descritas a seguir.
