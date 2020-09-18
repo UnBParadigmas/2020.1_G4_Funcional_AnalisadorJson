@@ -36,11 +36,13 @@ Apos entrar no ghci, o usuario pode escolher 2 opcoes:
 
 ## Vídeo
 
-<video controls="controls">
-  <source type="video/mp4" src="./zoom_6.mp4"></source>
-  <source type="video/webm" src="./zoom_6.mp4"></source>
-  <p>Your browser does not support the video element.</p>
-</video>
+Link do vídeo: https://youtu.be/-Is7pTud9ds
+
+Ou se preferir faça o dowload:
+ 
+<a href="./zoom_6.mp4">
+    <p>Apresentação_Paradigma_Funcional</p>
+</a>
 
 ## Outros 
 Quaisquer outras informações sobre seu projeto podem ser descritas a seguir.
